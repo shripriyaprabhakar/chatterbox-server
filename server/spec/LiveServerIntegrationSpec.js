@@ -6,6 +6,9 @@ describe('server', function() {
     request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
       expect(response.statusCode).to.equal(200);
       done();
+      //The testing framework needs to know when the asynchronous operation 
+      //is finished so it can check that the test passed. So Mocha gives 
+      //you a done() function that you call to let it know.
     });
   });
 
@@ -75,3 +78,13 @@ describe('server', function() {
 
 
 });
+
+
+/*
+Mocha is able to handle synchronous and asynchronous tests. When you run a synchronous test, you can just pass it as an anonymous function to it and you don't have to do anything else: Mocha knows the test is over when the function returns. However, if you are running an asynchronous test, you have to tell Mocha that the test is asynchronous. There are two ways to do this:
+
+Declare that the anonymous function you pass to it takes a parameter. Mocha will call your anonymous function with a single parameter which is a function you must call to indicate that your test is over. (This parameter is called done due to tradition. You could call it complete, cb or platypus and it would work just the same.) If you call done without a value, the test is successful. With a value, the test is a failure and the value should be an Error object or an object derived from Error.
+Return a promise: Mocha will wait for the promise to be resolved or rejected. If resolved, the test is successful. If rejected, the test failed.
+The code you see when you do done.toString() is just the code of the function that Mocha passes to your test when you declare it to take a parameter. You can see in it some of what I mentioned above (e.g. if you pass a parameter to done it should be an Error or derived from Error). The done in there is another done function which is private to Mocha.
+
+*/

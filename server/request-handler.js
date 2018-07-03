@@ -37,44 +37,54 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-
+  if (arguments.length > 2) {
+    response.writeHead(404, headers);
+    response.end({});
+    return;
+  }
   // The outgoing status.
   var statusCode = 200;
-
-  // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
-
+  // See the note below about CORS headers.
+  if (request.method === 'OPTIONS') {
+    response.writeHead(200, headers);
+    response.end('OK');
+  } else {
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
   //headers['Content-Type'] = 'text/plain';
   headers['Content-Type'] = 'application/json';
-  if(request.method === 'GET' && request.url === '/classes/messages') {
+  if(request.method === 'GET' && request.url.includes('/classes/messages')) {
     response.writeHead(200, headers);
     response.end(JSON.stringify(globaldata));
     
     
-  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+  } else if (request.method === 'POST' && request.url.includes('/classes/messages')) {
     var data = '';
     request.on('data', function(chunk){
-      console.log('i am called1');
       data += chunk;
       
     });
-    
     request.on('end', function(){
-      console.log('i am called2');
       data = JSON.parse(data);
-      globaldata.results.push(data);
-      response.writeHead(201, headers);
-      response.end(JSON.stringify(globaldata));
+      if (Array.isArray(data) && data.length >= 2) {
+        response.writeHead(404, headers);
+        response.end(JSON.stringify(globaldata));
+      } else {
+        globaldata.results.push(data);
+        response.writeHead(201, headers);
+        response.end(JSON.stringify(globaldata));
+      }
     });
   } else {
     response.writeHead(404, headers);
     response.end(JSON.stringify(globaldata));
   }
   
+    
+  }
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.

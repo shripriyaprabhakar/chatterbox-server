@@ -116,4 +116,45 @@ describe('Node Server Request Listener Function', function() {
       });
   });
 
+  it('Should 404 when asked for a nonexistent file (POST)', function() {
+    var req = new stubs.request('/arglebargle', 'POST');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    // Wait for response to return and then check status code
+    waitForThen(
+      function() { return res._ended; },
+      function() {
+        expect(res._responseCode).to.equal(404);
+      });
+  });
+  
+  it('Should respond with messages that were previously posted', function() {
+    var stubMsg = {
+      username: 'Jono',
+      text: 'Do my bidding!'
+    };
+    var req = new stubs.request('/classes/messages', 'POST', [stubMsg, stubMsg]);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+    expect(res._responseCode).to.equal(404);
+  });
+  
+  it('Server should not accept more than 2 arguments', function() {
+    var stubMsg = {
+      username: 'Jono',
+      text: 'Do my bidding!'
+    };
+    var req = new stubs.request('/classes/messages', 'POST', [stubMsg, stubMsg]);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res, {});
+    expect(res._responseCode).to.equal(404);
+  });
+  
+  
+
+
 });
