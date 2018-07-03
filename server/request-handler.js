@@ -52,28 +52,28 @@ var requestHandler = function(request, response) {
   headers['Content-Type'] = 'application/json';
   if(request.method === 'GET' && request.url === '/classes/messages') {
     response.writeHead(200, headers)
-    response.end(JSON.stringify({'results' : []}));
+    response.end(JSON.stringify(globaldata));
     
     
-  } else if (request.method === 'POST') {
-    
+  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+    var data = '';
     request.on('data', function(chunk){
-      console.log(chunk)
+      console.log('i am called1');
       data += chunk;
-      consol.log(data);
+      
     })
     
     request.on('end', function(){
+      console.log('i am called2');
       data = JSON.parse(data);
-      console.log(data);
+      globaldata.results.push(data);
       response.writeHead(201, headers)
-      response.end(JSON.stringify({'results' : []}))
+      response.end(JSON.stringify(globaldata));
     })
-    
-    
   }
    else {
-    response.end(404, headers);
+    response.writeHead(404, headers);
+    response.end(JSON.stringify(globaldata));
   }
   
 
