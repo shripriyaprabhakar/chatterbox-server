@@ -1,4 +1,4 @@
-/*************************************************************
+ /*************************************************************
 
 You should implement your request handler function in this file.
 
@@ -12,12 +12,21 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
+var globaldata = {
+  results: []
+}
+
 var requestHandler = function(request, response) {
+  
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
   // headers and URL, and about the outgoing response, such as its status
   // and content.
+  //request = 'http://parse.CAMPUS.hackreactor.com/chatterbox/classes/messages'
+
+
+  
   //
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
@@ -39,21 +48,54 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = 'text/plain';
+  //headers['Content-Type'] = 'text/plain';
+  headers['Content-Type'] = 'application/json';
+  if(request.method === 'GET' && request.url === '/classes/messages') {
+    response.writeHead(200, headers)
+    response.end(JSON.stringify({'results' : []}));
+    
+    
+  } else if (request.method === 'POST') {
+    
+    request.on('data', function(chunk){
+      console.log(chunk)
+      data += chunk;
+      consol.log(data);
+    })
+    
+    request.on('end', function(){
+      data = JSON.parse(data);
+      console.log(data);
+      response.writeHead(201, headers)
+      response.end(JSON.stringify({'results' : []}))
+    })
+    
+    
+  }
+   else {
+    response.end(404, headers);
+  }
+  
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+  //response.writeHead(statusCode, headers);
+
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
-  // response.end() will be the body of the response - i.e. what shows
+  // response.end() will be the body of thne response - i.e. what shows
   // up in the browser.
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end('Hello, World!');
+ 
+  //console.log('access detected');
+  //response.end('Hello, World!' + 'the request is coming from' + request.url);
+  
 };
+
+  
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
@@ -70,4 +112,6 @@ var defaultCorsHeaders = {
   'access-control-allow-headers': 'content-type, accept',
   'access-control-max-age': 10 // Seconds.
 };
+
+exports.requestHandler = requestHandler;
 

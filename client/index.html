@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>chatterbox</title>
+    <link rel="stylesheet" href="styles/styles.css">
+
+    <!-- dependencies -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script>
+      // YOU DO NOT NEED TO EDIT THIS CODE
+      if (!/(&|\?)username=/.test(window.location.search)) {
+        var newSearch = window.location.search;
+        if (newSearch !== '' & newSearch !== '?') {
+          newSearch += '&';
+        }
+        newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
+        window.location.search = newSearch;
+      }
+    </script>
+    <!-- your scripts -->
+    <script src="env/config.js"></script>
+    <script src="scripts/app.js"></script>
+  </head>
+  <body>
+    <div id="main">
+      <h1>chatterbox</h1>
+      <button id="refreshButton">Refresh</button>
+      <!-- Your HTML goes here! -->
+    </div>
+    <form type="messageField" id="messageForm">
+      <input class="messageBox" type="text"><br><br>
+      <input type="submit" id="submitMessage">
+    </form>
+    <div>
+      <span>
+        <span class="friendList">Friends: </span>
+        <span class="friendNames">This is a test</span>
+        <br><br>
+        <span>Room List: </span>
+        <select class="roomSelect" onchange="if (this.selectedIndex) app.handleListFilter();">
+        </select>
+      </span>
+    </div>
+
+    <div id="chats"></div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+
+        app.init();
+
+      });
+    </script>
+
+  </body>
+</html>
