@@ -1,4 +1,4 @@
- /*************************************************************
+/*************************************************************
 
 You should implement your request handler function in this file.
 
@@ -14,7 +14,7 @@ this file and include it in basic-server.js so that it actually works.
 
 var globaldata = {
   results: []
-}
+};
 
 var requestHandler = function(request, response) {
   
@@ -51,7 +51,7 @@ var requestHandler = function(request, response) {
   //headers['Content-Type'] = 'text/plain';
   headers['Content-Type'] = 'application/json';
   if(request.method === 'GET' && request.url === '/classes/messages') {
-    response.writeHead(200, headers)
+    response.writeHead(200, headers);
     response.end(JSON.stringify(globaldata));
     
     
@@ -61,17 +61,16 @@ var requestHandler = function(request, response) {
       console.log('i am called1');
       data += chunk;
       
-    })
+    });
     
     request.on('end', function(){
       console.log('i am called2');
       data = JSON.parse(data);
       globaldata.results.push(data);
-      response.writeHead(201, headers)
+      response.writeHead(201, headers);
       response.end(JSON.stringify(globaldata));
-    })
-  }
-   else {
+    });
+  } else {
     response.writeHead(404, headers);
     response.end(JSON.stringify(globaldata));
   }
